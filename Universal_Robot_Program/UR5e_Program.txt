@@ -1,0 +1,172 @@
+ Program
+   BeforeStart
+     Gripper Activate
+     Base_var≔Base_1_const
+     Call Homee
+     Read OPC UA server: start
+     Read OPC UA server: isBusy
+     Read OPC UA server: service
+     Read OPC UA server: pick_id
+     Read OPC UA server: pick_dir
+     Read OPC UA server: place_id
+     Read OPC UA server: place_dir
+   Robot Program
+     Call Homee
+     Call openGripper
+     Call Service
+     Call wait_for_start
+     Call read_pos
+     Switch pick_dir
+       Case 1
+         Base_var≔Base_1_const
+       Case 2
+         Base_var≔Base_2_const
+       Case 3
+         Halt
+       Case 4
+         Halt
+       Case 5
+         Halt
+       Case 6
+         Base_var≔Base_6_const
+       Default Case
+         Halt
+     Call Homee
+     Switch pick_id
+       Case 1
+         Call goPick_1
+       Case 2
+         Call goPick_2
+       Case 101
+         'test'
+       Default Case
+         Halt
+     Call Homee
+     Switch place_dir
+       Case 1
+         Base_var≔Base_1_const
+       Case 2
+         Base_var≔Base_2_const
+       Case 3
+         Halt
+       Case 4
+         Halt
+       Case 5
+         Halt
+       Case 6
+         Base_var≔Base_6_const
+       Default Case
+         Halt
+     Call Homee
+     Switch place_id
+       Case 1
+         Call goPlace_1
+       Case 2
+         Call goPlace_2
+       Case 101
+         'test'
+       Default Case
+         Halt
+   Service
+     Read OPC UA server: service
+     Switch service
+       Case 0
+         'no service needed'
+       Case 1
+         service≔0
+         Write OPC UA server: service
+         Base_var≔Base_1_const
+         MoveJ
+           Waypoint_1
+         Halt
+       Case 2
+         service≔0
+         Write OPC UA server: service
+         Base_var≔Base_2_const
+         MoveJ
+           Waypoint_1
+         Halt
+       Case 3
+         service≔0
+         Write OPC UA server: service
+         Halt
+       Case 4
+         service≔0
+         Write OPC UA server: service
+         Halt
+       Case 5
+         service≔0
+         Write OPC UA server: service
+         Halt
+       Case 6
+         service≔0
+         Write OPC UA server: service
+         Base_var≔Base_6_const
+         MoveJ
+           Waypoint_1
+         Halt
+   Homee
+     MoveJ
+       posHome
+   openGripper
+     Gripper Open (1)
+   wait_for_start
+     isBusy≔ False 
+     Write OPC UA server: isBusy
+     Read OPC UA server: start
+     Loop  True ≠start
+       Wait: 0.1
+       Read OPC UA server: start
+     start≔ False 
+     Write OPC UA server: start
+     isBusy≔ True 
+     Write OPC UA server: isBusy
+   read_pos
+     pick_id≔0
+     pick_dir≔0
+     place_id≔0
+     place_dir≔0
+     Read OPC UA server: pick_id
+     Read OPC UA server: pick_dir
+     Read OPC UA server: place_id
+     Read OPC UA server: place_dir
+   goPick_1
+     MoveP
+       posTo_1_down
+     MoveL
+       pos_1_down
+     Gripper Move45% (1)
+     MoveL
+       pos_1_up
+     MoveL
+       posTo_1_up
+   goPlace_1
+     MoveL
+       posTo_1_up
+     MoveL
+       pos_1_up
+     MoveL
+       pos_1_down
+     Gripper Open (1)
+     MoveL
+       posTo_1_down
+   goPick_2
+     MoveP
+       posTo_2_down
+     MoveL
+       pos_2_down
+     Gripper Move45% (1)
+     MoveL
+       pos_2_up
+     MoveL
+       posTo_2_up
+   goPlace_2
+     MoveP
+       posTo_2_up
+     MoveL
+       pos_2_up
+     MoveL
+       pos_2_down
+     Gripper Open (1)
+     MoveP
+       posTo_2_down
